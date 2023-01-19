@@ -67,3 +67,9 @@ main {
     width: 100%;
     background-color: var(--main);
 }
+.player-x-input {
+    position: absolute;
+    background-color: var(--white);
+    padding: 20px;
+    z-index: 10;
+}
