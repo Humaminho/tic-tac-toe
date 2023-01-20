@@ -1,6 +1,6 @@
 const log = console.log;
-const game = (function() {
-    const GAMEBOARD = ['','','','','','','','',''];
+const game = (() => {
+    let gameboard = ['','','','','','','','',''];
     
     const PLAYER_X = document.querySelector('#x-btn');
     const PLAYER_O = document.querySelector('#o-btn');
@@ -13,66 +13,103 @@ const game = (function() {
     const PLAYER_X_SUBMIT = document.querySelector('#player-x-submit');
     const PLAYER_O_SUBMIT = document.querySelector('#player-o-submit');
     const OVERLAY = document.querySelector('.overlay');
-
+    
     const X_TURN = 'X';
     const O_TURN = 'O';
+    let playerX = {};
+    let playerO = {};
     let playerTurn = X_TURN;
     
-    const render = () => {
-        for ( let i = 0 ; i < GAMEBOARD.length ; i++) {
-            const box = document.querySelector(`[data-index='${i}']`);
-            box.innerText = GAMEBOARD[i];
+    const createPlayer = (name, sign) => {
+        return {
+            name,
+            sign,
         }
     }
 
+    const render = () => {
+        for ( let i = 0 ; i < gameboard.length ; i++) {
+            const box = document.querySelector(`[data-index='${i}']`);
+            box.innerText = gameboard[i];
+        }
+    }
+
+    const replay = () => {
+        gameboard = ['','','','','','','','',''];
+        playerTurn = X_TURN;
+        log(playerTurn);
+        playGame();
+    }
+    
     const switchPlayer = () => {
         if (playerTurn === X_TURN) playerTurn = O_TURN;
         else playerTurn = X_TURN;
     }
+    
+    const toggleOverlayOn = () => {
+        OVERLAY.classList.remove('off');
+        OVERLAY.classList.add('on');
+    }
+    const toggleOverlayOff = () => {
+        OVERLAY.classList.add('off');
+        OVERLAY.classList.remove('on');
+    }
+
+    announceWinner = () => {
+        if ( playerX.sign === playerTurn ) {
+            toggleOverlayOn();
+            OVERLAY.innerText = `${playerX.name} has won the game!`;
+        } else if ( playerO.sign === playerTurn ) {
+            toggleOverlayOn();
+            OVERLAY.innerText = `${playerO.name} has won the game!`;
+        }
+        replay();
+    }
 
     const checkWin = () => {
-        const A = GAMEBOARD[0];
-        const B = GAMEBOARD[1];
-        const C = GAMEBOARD[2];
-        const D = GAMEBOARD[3];
-        const E = GAMEBOARD[4];
-        const F = GAMEBOARD[5];
-        const G = GAMEBOARD[6];
-        const H = GAMEBOARD[7];
-        const I = GAMEBOARD[8];
+        const A = gameboard[0];
+        const B = gameboard[1];
+        const C = gameboard[2];
+        const D = gameboard[3];
+        const E = gameboard[4];
+        const F = gameboard[5];
+        const G = gameboard[6];
+        const H = gameboard[7];
+        const I = gameboard[8];
 
         if ( A === B && B === C && A !== ''  ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( D === E && E === F && D !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( G === H && H === I && G !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( A === D && D === G && A !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( B === E && E === H && B !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( C === F && F === I && C !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( A === E && E === I && A !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( C === E && E === G && C !== '' ) {
-            log(`Player ${playerTurn} won!`);
+            announceWinner();
         }
         if ( A !== '' && B !== '' && C !== '' && D !== '' && E !== '' && F !== '' && G !== '' && H !== '' && I !== '') {
             log("It's a draw");
+            replay();
         }
     }
 
     const tickBox = (e) => {
         const targetBox = e.target.getAttribute('data-index');
-        GAMEBOARD[targetBox] = playerTurn;
+        gameboard[targetBox] = playerTurn;
         render();
         checkWin();
         switchPlayer();
@@ -83,20 +120,6 @@ const game = (function() {
         BOXES[i].addEventListener( "click", tickBox, { once: true });
     }}
 
-    const createPlayer = (name, sign) => {
-        return {
-            name,
-            sign,
-        }
-    }
-    const toggleOverlayOn = () => {
-        OVERLAY.classList.remove('off');
-        OVERLAY.classList.add('on');
-    }
-    const toggleOverlayOff = () => {
-        OVERLAY.classList.add('off');
-        OVERLAY.classList.remove('on');
-    }
     PLAYER_X.addEventListener('click', () => {
         PLAYER_X_POP_UP.classList.remove('closed');
         PLAYER_X_POP_UP.classList.add('open');
@@ -111,24 +134,26 @@ const game = (function() {
         if (PLAYER_X_INPUT.value === "") {
             alert('Please insert name');
         } else {
-            let playerX = createPlayer(PLAYER_X_INPUT.value, 'X')
+            playerX = createPlayer(PLAYER_X_INPUT.value, 'X');
             PLAYER_X_POP_UP.classList.add('closed');
             PLAYER_X_POP_UP.classList.remove('open');
             PLAYER_X.classList.add('selected');
             toggleOverlayOff();
-            return playerX;
+            PLAYER_X_INPUT.value = "";
+            if ( playerX !== {} && playerO !== {} ) replay();
         }
     });
     PLAYER_O_SUBMIT.addEventListener('click', () => {
         if (PLAYER_O_INPUT.value === "") {
             alert('Please insert name');
         } else {
-            let playerO = createPlayer(PLAYER_O_INPUT.value, 'O')
+            playerO = createPlayer(PLAYER_O_INPUT.value, 'O');
             PLAYER_O_POP_UP.classList.add('closed');
             PLAYER_O_POP_UP.classList.remove('open');
             PLAYER_O.classList.add('selected');
             toggleOverlayOff();
-            return playerO;
+            PLAYER_O_INPUT.value = "";
+            if ( playerX !== {} && playerO !== {} ) replay();
         }
     });
 
@@ -137,9 +162,9 @@ const game = (function() {
         render();
     }
 
-
     return {
         playGame,
+        playerTurn,
     }
+
 })();
-game.playGame();
