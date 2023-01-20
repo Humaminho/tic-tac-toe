@@ -37,12 +37,21 @@ main {
     display: flex;
     justify-content: center;
     gap: 10px;
+    margin: 20px;
 }
 #xo > button {
     height: 50px;
     width: 70px;
     font-size: 30px;
-
+    border: 3px solid var(--black);
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.selected {
+    background-color: rgb(55, 55, 255);
+    color: white;
 }
 #gameboard-container {
     height: 500px;
@@ -67,9 +76,48 @@ main {
     width: 100%;
     background-color: var(--main);
 }
-.player-x-input {
+.player-x-pop-up, .player-o-pop-up {
     position: absolute;
+    top: 35%;
     background-color: var(--white);
-    padding: 20px;
+    padding: 40px;
+    border-radius: 20px;
     z-index: 10;
+    transition: all 0.2s;
+}
+.closed {
+    transform: scale(0);
+}
+.open {
+    transform: scale(1);
+}
+label {
+    font-size: 30px;
+    margin-right: 15px;
+}
+input {
+    padding: 9px;
+    font-size: 30px;
+}
+#player-o-submit, #player-x-submit {
+    font-size: 30px;
+    font-weight: bold;
+    display: block;
+    padding: 10px 30px;
+    margin: auto;
+    margin-top: 20px;
+}
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: rgb(0, 0, 0,0.8);
+}
+.off {
+    display: none;
+}
+.on {
+    display: block;
 }

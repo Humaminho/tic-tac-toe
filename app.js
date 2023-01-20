@@ -6,6 +6,13 @@ const game = (function() {
     const PLAYER_O = document.querySelector('#o-btn');
     const REPLAY_BUTTON = document.querySelector('#replay-btn');
     const BOXES = document.querySelectorAll('.box');
+    const PLAYER_X_POP_UP = document.querySelector('.player-x-pop-up');
+    const PLAYER_O_POP_UP = document.querySelector('.player-o-pop-up');
+    const PLAYER_X_INPUT = document.querySelector('#player-x-input');
+    const PLAYER_O_INPUT = document.querySelector('#player-o-input');
+    const PLAYER_X_SUBMIT = document.querySelector('#player-x-submit');
+    const PLAYER_O_SUBMIT = document.querySelector('#player-o-submit');
+    const OVERLAY = document.querySelector('.overlay');
 
     const X_TURN = 'X';
     const O_TURN = 'O';
@@ -82,8 +89,48 @@ const game = (function() {
             sign,
         }
     }
-    PLAYER_X.addEventListener('click', createPlayer(inputX, 'X'));
-    PLAYER_Y.addEventListener('click', createPlayer(inputO, 'O'));
+    const toggleOverlayOn = () => {
+        OVERLAY.classList.remove('off');
+        OVERLAY.classList.add('on');
+    }
+    const toggleOverlayOff = () => {
+        OVERLAY.classList.add('off');
+        OVERLAY.classList.remove('on');
+    }
+    PLAYER_X.addEventListener('click', () => {
+        PLAYER_X_POP_UP.classList.remove('closed');
+        PLAYER_X_POP_UP.classList.add('open');
+        toggleOverlayOn();
+    });
+    PLAYER_O.addEventListener('click', () => {
+        PLAYER_O_POP_UP.classList.remove('closed');
+        PLAYER_O_POP_UP.classList.add('open');
+        toggleOverlayOn();
+    });
+    PLAYER_X_SUBMIT.addEventListener('click', () => {
+        if (PLAYER_X_INPUT.value === "") {
+            alert('Please insert name');
+        } else {
+            let playerX = createPlayer(PLAYER_X_INPUT.value, 'X')
+            PLAYER_X_POP_UP.classList.add('closed');
+            PLAYER_X_POP_UP.classList.remove('open');
+            PLAYER_X.classList.add('selected');
+            toggleOverlayOff();
+            return playerX;
+        }
+    });
+    PLAYER_O_SUBMIT.addEventListener('click', () => {
+        if (PLAYER_O_INPUT.value === "") {
+            alert('Please insert name');
+        } else {
+            let playerO = createPlayer(PLAYER_O_INPUT.value, 'O')
+            PLAYER_O_POP_UP.classList.add('closed');
+            PLAYER_O_POP_UP.classList.remove('open');
+            PLAYER_O.classList.add('selected');
+            toggleOverlayOff();
+            return playerO;
+        }
+    });
 
     const playGame = () => {
         addEvent();
