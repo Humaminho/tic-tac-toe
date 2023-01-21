@@ -26,7 +26,7 @@ const game = (() => {
             sign,
         }
     }
-
+    
     const render = () => {
         for ( let i = 0 ; i < gameboard.length ; i++) {
             const box = document.querySelector(`[data-index='${i}']`);
@@ -34,16 +34,26 @@ const game = (() => {
         }
     }
 
+    const addEvent = () => {
+        for ( let i = 0 ; i < BOXES.length ; i++ ) {
+            BOXES[i].addEventListener( "click", tickBox, { once: true });
+        }
+    }
+    
+    const playGame = () => {
+        addEvent();
+        render();
+    }
+
     const replay = () => {
         gameboard = ['','','','','','','','',''];
         playerTurn = X_TURN;
-        log(playerTurn);
         playGame();
     }
     
     const switchPlayer = () => {
-        if (playerTurn === X_TURN) playerTurn = O_TURN;
-        else playerTurn = X_TURN;
+        if (playerTurn === O_TURN) playerTurn = X_TURN;
+        else playerTurn = O_TURN;
     }
     
     const toggleOverlayOn = () => {
@@ -53,6 +63,15 @@ const game = (() => {
     const toggleOverlayOff = () => {
         OVERLAY.classList.add('off');
         OVERLAY.classList.remove('on');
+        OVERLAY.innerText = "";
+    }
+    const closePlayerXPopUp = () => {
+        PLAYER_X_POP_UP.classList.add('closed');
+        PLAYER_X_POP_UP.classList.remove('open');
+    }
+    const closePlayerOPopUp = () => {
+        PLAYER_O_POP_UP.classList.add('closed');
+        PLAYER_O_POP_UP.classList.remove('open');
     }
 
     announceWinner = () => {
@@ -63,6 +82,11 @@ const game = (() => {
             toggleOverlayOn();
             OVERLAY.innerText = `${playerO.name} has won the game!`;
         }
+        replay();
+    }
+    announceDraw = () => {
+        toggleOverlayOn();
+        OVERLAY.innerText = "It's a draw!";
         replay();
     }
 
@@ -102,24 +126,20 @@ const game = (() => {
             announceWinner();
         }
         if ( A !== '' && B !== '' && C !== '' && D !== '' && E !== '' && F !== '' && G !== '' && H !== '' && I !== '') {
-            log("It's a draw");
-            replay();
+            announceDraw();
         }
     }
-
+    
     const tickBox = (e) => {
+        log(playerTurn);
         const targetBox = e.target.getAttribute('data-index');
         gameboard[targetBox] = playerTurn;
         render();
         checkWin();
         switchPlayer();
     }
-
-    const addEvent = () => {
-        for ( let i = 0 ; i < BOXES.length ; i++ ) {
-        BOXES[i].addEventListener( "click", tickBox, { once: true });
-    }}
-
+    
+        
     PLAYER_X.addEventListener('click', () => {
         PLAYER_X_POP_UP.classList.remove('closed');
         PLAYER_X_POP_UP.classList.add('open');
@@ -130,13 +150,17 @@ const game = (() => {
         PLAYER_O_POP_UP.classList.add('open');
         toggleOverlayOn();
     });
+    OVERLAY.addEventListener('click', () => {
+        closePlayerXPopUp();
+        closePlayerOPopUp();
+        toggleOverlayOff();
+    })
     PLAYER_X_SUBMIT.addEventListener('click', () => {
         if (PLAYER_X_INPUT.value === "") {
             alert('Please insert name');
         } else {
             playerX = createPlayer(PLAYER_X_INPUT.value, 'X');
-            PLAYER_X_POP_UP.classList.add('closed');
-            PLAYER_X_POP_UP.classList.remove('open');
+            closePlayerXPopUp();
             PLAYER_X.classList.add('selected');
             toggleOverlayOff();
             PLAYER_X_INPUT.value = "";
@@ -148,8 +172,7 @@ const game = (() => {
             alert('Please insert name');
         } else {
             playerO = createPlayer(PLAYER_O_INPUT.value, 'O');
-            PLAYER_O_POP_UP.classList.add('closed');
-            PLAYER_O_POP_UP.classList.remove('open');
+            closePlayerOPopUp();
             PLAYER_O.classList.add('selected');
             toggleOverlayOff();
             PLAYER_O_INPUT.value = "";
@@ -157,14 +180,9 @@ const game = (() => {
         }
     });
 
-    const playGame = () => {
-        addEvent();
-        render();
-    }
 
     return {
         playGame,
-        playerTurn,
     }
 
 })();
