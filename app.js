@@ -19,6 +19,7 @@ const game = (() => {
     let playerX = {};
     let playerO = {};
     let playerTurn = X_TURN;
+    let dontSwitchPlayer = false;
     
     const createPlayer = (name, sign) => {
         return {
@@ -52,7 +53,8 @@ const game = (() => {
     }
     
     const switchPlayer = () => {
-        if (playerTurn === O_TURN) playerTurn = X_TURN;
+        if (dontSwitchPlayer === true) return;
+        else if (playerTurn === O_TURN) playerTurn = X_TURN;
         else playerTurn = O_TURN;
     }
     
@@ -82,11 +84,13 @@ const game = (() => {
             toggleOverlayOn();
             OVERLAY.innerText = `${playerO.name} has won the game!`;
         }
+        dontSwitchPlayer = true;
         replay();
     }
     announceDraw = () => {
         toggleOverlayOn();
         OVERLAY.innerText = "It's a draw!";
+        dontSwitchPlayer = true;
         replay();
     }
 
@@ -131,14 +135,13 @@ const game = (() => {
     }
     
     const tickBox = (e) => {
-        log(playerTurn);
         const targetBox = e.target.getAttribute('data-index');
         gameboard[targetBox] = playerTurn;
+        dontSwitchPlayer = false;
         render();
         checkWin();
         switchPlayer();
     }
-    
         
     PLAYER_X.addEventListener('click', () => {
         PLAYER_X_POP_UP.classList.remove('closed');
@@ -179,6 +182,7 @@ const game = (() => {
             if ( playerX !== {} && playerO !== {} ) replay();
         }
     });
+    REPLAY_BUTTON.addEventListener('click', replay);
 
 
     return {
