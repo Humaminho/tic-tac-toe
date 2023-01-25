@@ -38,6 +38,7 @@ const game = (() => {
     const addEvent = () => {
         for ( let i = 0 ; i < BOXES.length ; i++ ) {
             BOXES[i].addEventListener( "click", tickBox, { once: true });
+            BOXES[i].classList.add('active');
         }
     }
     
