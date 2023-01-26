@@ -16,8 +16,8 @@ const game = (() => {
     
     const X_TURN = 'X';
     const O_TURN = 'O';
-    let playerX = {};
-    let playerO = {};
+    let playerX = "";
+    let playerO = "";
     let playerTurn = X_TURN;
     let dontSwitchPlayer = false;
     
@@ -43,8 +43,12 @@ const game = (() => {
     }
     
     const playGame = () => {
-        addEvent();
-        render();
+        if ( playerX === "" && playerO === "") {
+            alert('not yet');
+        } else {
+            addEvent();
+            render();
+        }
     }
 
     const replay = () => {
@@ -106,29 +110,16 @@ const game = (() => {
         const H = gameboard[7];
         const I = gameboard[8];
 
-        if ( A === B && B === C && A !== ''  ) {
+        if (( A === B && B === C && A !== '' ) ||
+            ( D === E && E === F && D !== '' ) ||
+            ( G === H && H === I && G !== '' ) ||
+            ( A === D && D === G && A !== '' ) ||
+            ( B === E && E === H && B !== '' ) ||
+            ( C === F && F === I && C !== '' ) ||
+            ( A === E && E === I && A !== '' ) ||
+            ( C === E && E === G && C !== '' )) {
             announceWinner();
-        }
-        if ( D === E && E === F && D !== '' ) {
-            announceWinner();
-        }
-        if ( G === H && H === I && G !== '' ) {
-            announceWinner();
-        }
-        if ( A === D && D === G && A !== '' ) {
-            announceWinner();
-        }
-        if ( B === E && E === H && B !== '' ) {
-            announceWinner();
-        }
-        if ( C === F && F === I && C !== '' ) {
-            announceWinner();
-        }
-        if ( A === E && E === I && A !== '' ) {
-            announceWinner();
-        }
-        if ( C === E && E === G && C !== '' ) {
-            announceWinner();
+            return;
         } else if ( A !== '' && B !== '' && C !== '' && D !== '' && E !== '' && F !== '' && G !== '' && H !== '' && I !== '') {
             announceDraw();
         }
@@ -167,7 +158,7 @@ const game = (() => {
             PLAYER_X.classList.add('selected');
             toggleOverlayOff();
             PLAYER_X_INPUT.value = "";
-            if ( playerX !== {} && playerO !== {} ) replay();
+            if ( playerX !== "" && playerO !== "" ) replay();
         }
     });
     PLAYER_O_SUBMIT.addEventListener('click', () => {
@@ -179,9 +170,10 @@ const game = (() => {
             PLAYER_O.classList.add('selected');
             toggleOverlayOff();
             PLAYER_O_INPUT.value = "";
-            if ( playerX !== {} && playerO !== {} ) replay();
+            if ( playerX !== "" && playerO !== "" ) replay();
         }
     });
+
     REPLAY_BUTTON.addEventListener('click', replay);
 
 
