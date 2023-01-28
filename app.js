@@ -175,10 +175,4 @@ const game = (() => {
     });
 
     REPLAY_BUTTON.addEventListener('click', replay);
-
-
-    return {
-        playGame,
-    }
-
 })();
